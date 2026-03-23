@@ -99,7 +99,8 @@ public class Main {
                 System.out.println("2 - Ajouter un rendez-vous perso");
                 System.out.println("3 - Ajouter une réunion");
                 System.out.println("4 - Ajouter un évènement périodique");
-                System.out.println("5 - Se déconnecter");
+                System.out.println("5 - Détecter les conflits");
+                System.out.println("6 - Se déconnecter");
                 System.out.print("Votre choix : ");
 
                 String choix = scanner.nextLine();
@@ -256,6 +257,18 @@ public class Main {
                                 "", "", frequence);
 
                         System.out.println("Événement ajouté.");
+                        break;
+
+                    case "5":
+                        java.util.List<mycalendar.domain.vo.Conflit> conflits = calendar.detecterConflits();
+                        if (conflits.isEmpty()) {
+                            System.out.println("Aucun conflit détecté !");
+                        } else {
+                            System.out.println("=== " + conflits.size() + " CONFLITS DÉTECTÉS ===");
+                            for (mycalendar.domain.vo.Conflit c : conflits) {
+                                System.out.println("  - Conflit entre [" + c.event1().description() + "] ET [" + c.event2().description() + "]");
+                            }
+                        }
                         break;
 
                     default:
