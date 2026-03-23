@@ -106,4 +106,12 @@ public class CalendarManager {
         }
         return conflits;
     }
+
+    public void supprimerParId(mycalendar.domain.vo.EventId id) {
+        // Stub pour test RED
+    }
+
+    public List<Evenement> tous() {
+        return new java.util.ArrayList<>(nouveauxEvenements);
+    }
 }

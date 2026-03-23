@@ -35,4 +35,17 @@ class CalendarManagerTest {
         assertEquals(1, conflits.size(), "Il doit y avoir un conflit détecté");
         assertTrue(conflits.get(0).implique(rdv1) && conflits.get(0).implique(rdv2));
     }
+
+    @Test
+    void testSupprimerParId() {
+        DateHeureDebut debut = new DateHeureDebut(LocalDateTime.of(2023, 10, 15, 10, 0));
+        DureeEvenement duree = new DureeEvenement(60);
+        RendezVousPersonnel rdv = new RendezVousPersonnel(new TitreEvenement("RDV"), new Proprietaire("P1"), debut, duree);
+
+        manager.nouveauxEvenements.add(rdv);
+        assertEquals(1, manager.tous().size());
+
+        manager.supprimerParId(rdv.id());
+        assertEquals(0, manager.tous().size(), "L'événement doit être supprimé");
+    }
 }
