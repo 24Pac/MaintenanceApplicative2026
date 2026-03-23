@@ -172,7 +172,7 @@ public class Main {
                         }
                         break;
 
-                    case "2":
+                    case "2": {
                         // Ajout simplifié d'un RDV personnel
                         System.out.print("Titre de l'événement : ");
                         mycalendar.domain.vo.TitreEvenement titre = new mycalendar.domain.vo.TitreEvenement(scanner.nextLine());
@@ -195,6 +195,7 @@ public class Main {
 
                         System.out.println("Événement ajouté.");
                         break;
+                    }
 
                     case "3": {
                         // Ajout simplifié d'une réunion
@@ -236,29 +237,33 @@ public class Main {
                         break;
                     }
 
-                        case "4":
+                    case "4": {
                         // Ajout simplifié d'un événement périodique
                         System.out.print("Titre de l'événement : ");
-                        String titre3 = scanner.nextLine();
+                        TitreEvenement titre = new TitreEvenement(scanner.nextLine());
+                        Proprietaire prop = new Proprietaire(utilisateur);
                         System.out.print("Année (AAAA) : ");
-                        int annee3 = Integer.parseInt(scanner.nextLine());
+                        int annee = Integer.parseInt(scanner.nextLine());
                         System.out.print("Mois (1-12) : ");
-                        int moisRdv3 = Integer.parseInt(scanner.nextLine());
+                        int moisRdv = Integer.parseInt(scanner.nextLine());
                         System.out.print("Jour (1-31) : ");
-                        int jourRdv3 = Integer.parseInt(scanner.nextLine());
+                        int jourRdv = Integer.parseInt(scanner.nextLine());
                         System.out.print("Heure début (0-23) : ");
-                        int heure3 = Integer.parseInt(scanner.nextLine());
+                        int heure = Integer.parseInt(scanner.nextLine());
                         System.out.print("Minute début (0-59) : ");
-                        int minute3 = Integer.parseInt(scanner.nextLine());
+                        int minute = Integer.parseInt(scanner.nextLine());
+                        DateHeureDebut dateDebut = new DateHeureDebut(LocalDateTime.of(annee, moisRdv, jourRdv, heure, minute));
+                        
+                        System.out.print("Durée (en minutes) : ");
+                        DureeEvenement duree = new DureeEvenement(Integer.parseInt(scanner.nextLine()));
+                        
                         System.out.print("Frequence (en jours) : ");
-                        int frequence = Integer.parseInt(scanner.nextLine());
+                        FrequenceRecurrence frequence = new FrequenceRecurrence(Integer.parseInt(scanner.nextLine()));
 
-                        calendar.ajouterEvent("PERIODIQUE", titre3, utilisateur,
-                                LocalDateTime.of(annee3, moisRdv3, jourRdv3, heure3, minute3), 0,
-                                "", "", frequence);
-
+                        calendar.ajouter(new EvenementPeriodique(titre, prop, dateDebut, duree, frequence));
                         System.out.println("Événement ajouté.");
                         break;
+                    }
 
                     case "5":
                         java.util.List<mycalendar.domain.vo.Conflit> conflits = calendar.detecterConflits();
