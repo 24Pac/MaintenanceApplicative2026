@@ -117,7 +117,7 @@ public class Main {
 
                         switch (choix) {
                             case "1":
-                                calendar.afficherEvenements();
+                                afficherListe(calendar.tous());
                                 break;
 
                             case "2":
