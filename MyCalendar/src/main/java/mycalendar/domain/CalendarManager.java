@@ -92,4 +92,8 @@ public class CalendarManager {
                 .filter(e -> e.estDansPeriode(periode))
                 .collect(java.util.stream.Collectors.toList());
     }
+
+    public List<mycalendar.domain.vo.Conflit> detecterConflits() {
+        return java.util.Collections.emptyList(); // Stub pour test RED
+    }
 }
