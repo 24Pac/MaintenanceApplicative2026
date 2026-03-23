@@ -96,8 +96,9 @@ public class Main {
                 System.out.println("2 - Ajouter un rendez-vous perso");
                 System.out.println("3 - Ajouter une réunion");
                 System.out.println("4 - Ajouter un évènement périodique");
-                System.out.println("5 - Détecter les conflits");
-                System.out.println("6 - Se déconnecter");
+                System.out.println("5 - Ajouter une journée entière (Nouveau !)");
+                System.out.println("6 - Détecter les conflits");
+                System.out.println("7 - Se déconnecter");
                 System.out.print("Votre choix : ");
 
                 String choix = scanner.nextLine();
@@ -265,7 +266,24 @@ public class Main {
                         break;
                     }
 
-                    case "5":
+                    case "5": {
+                        System.out.print("Titre de l'événement (Journée Entière) : ");
+                        TitreEvenement titre = new TitreEvenement(scanner.nextLine());
+                        Proprietaire prop = new Proprietaire(utilisateur);
+                        System.out.print("Année (AAAA) : ");
+                        int annee = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Mois (1-12) : ");
+                        int moisRdv = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Jour (1-31) : ");
+                        int jourRdv = Integer.parseInt(scanner.nextLine());
+                        DateHeureDebut dateDebut = new DateHeureDebut(LocalDateTime.of(annee, moisRdv, jourRdv, 0, 0));
+
+                        calendar.ajouter(new JourneeEntiere(titre, prop, dateDebut));
+                        System.out.println("Événement ajouté.");
+                        break;
+                    }
+
+                    case "6": {
                         java.util.List<mycalendar.domain.vo.Conflit> conflits = calendar.detecterConflits();
                         if (conflits.isEmpty()) {
                             System.out.println("Aucun conflit détecté !");
@@ -276,6 +294,7 @@ public class Main {
                             }
                         }
                         break;
+                    }
 
                     default:
                         System.out.println("Déconnexion ! Voulez-vous continuer ? (O/N)");
