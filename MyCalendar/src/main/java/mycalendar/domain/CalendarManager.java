@@ -108,7 +108,7 @@ public class CalendarManager {
     }
 
     public void supprimerParId(mycalendar.domain.vo.EventId id) {
-        // Stub pour test RED
+        nouveauxEvenements.removeIf(e -> e.id().equals(id));
     }
 
     public List<Evenement> tous() {
