@@ -19,7 +19,7 @@ class ParticipantsTest {
 
     @Test
     void listeNullInterdite() {
-        assertThrows(IllegalArgumentException.class, () -> new Participants(null));
+        assertThrows(NullPointerException.class, () -> new Participants(null));
     }
 
     @Test

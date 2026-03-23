@@ -15,7 +15,7 @@ class DateHeureDebutTest {
 
     @Test
     void dateNullInterdite() {
-        assertThrows(IllegalArgumentException.class, () -> new DateHeureDebut(null));
+        assertThrows(NullPointerException.class, () -> new DateHeureDebut(null));
     }
 
     @Test

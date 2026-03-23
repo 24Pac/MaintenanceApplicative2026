@@ -25,7 +25,7 @@ class PeriodeRechercheTest {
     @Test
     void debutNullInterdit() {
         DateHeureDebut fin = new DateHeureDebut(LocalDateTime.of(2026, 3, 31, 23, 59));
-        assertThrows(IllegalArgumentException.class, () -> new PeriodeRecherche(null, fin));
+        assertThrows(NullPointerException.class, () -> new PeriodeRecherche(null, fin));
     }
 
     @Test
