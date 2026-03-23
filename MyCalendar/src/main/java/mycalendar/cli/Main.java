@@ -1,11 +1,7 @@
 package mycalendar.cli;
 
-import mycalendar.domain.CalendarManager;
-import mycalendar.domain.Event;
-import mycalendar.domain.Evenement;
-import mycalendar.domain.RendezVousPersonnel;
-import mycalendar.domain.vo.PeriodeRecherche;
-import mycalendar.domain.vo.DateHeureDebut;
+import mycalendar.domain.*;
+import mycalendar.domain.vo.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
@@ -200,24 +196,26 @@ public class Main {
                         System.out.println("Événement ajouté.");
                         break;
 
-                    case "3":
+                    case "3": {
                         // Ajout simplifié d'une réunion
                         System.out.print("Titre de l'événement : ");
-                        String titre2 = scanner.nextLine();
+                        TitreEvenement titre = new TitreEvenement(scanner.nextLine());
+                        Proprietaire prop = new Proprietaire(utilisateur);
                         System.out.print("Année (AAAA) : ");
-                        int annee2 = Integer.parseInt(scanner.nextLine());
+                        int annee = Integer.parseInt(scanner.nextLine());
                         System.out.print("Mois (1-12) : ");
-                        int moisRdv2 = Integer.parseInt(scanner.nextLine());
+                        int moisRdv = Integer.parseInt(scanner.nextLine());
                         System.out.print("Jour (1-31) : ");
-                        int jourRdv2 = Integer.parseInt(scanner.nextLine());
+                        int jourRdv = Integer.parseInt(scanner.nextLine());
                         System.out.print("Heure début (0-23) : ");
-                        int heure2 = Integer.parseInt(scanner.nextLine());
+                        int heure = Integer.parseInt(scanner.nextLine());
                         System.out.print("Minute début (0-59) : ");
-                        int minute2 = Integer.parseInt(scanner.nextLine());
+                        int minute = Integer.parseInt(scanner.nextLine());
+                        DateHeureDebut dateDebut = new DateHeureDebut(LocalDateTime.of(annee, moisRdv, jourRdv, heure, minute));
                         System.out.print("Durée (en minutes) : ");
-                        int duree2 = Integer.parseInt(scanner.nextLine());
+                        DureeEvenement duree = new DureeEvenement(Integer.parseInt(scanner.nextLine()));
                         System.out.println("Lieu :");
-                        String lieu = scanner.nextLine();
+                        Lieu lieu = new Lieu(scanner.nextLine());
                         
                         String participants = utilisateur;
                         
@@ -229,12 +227,14 @@ public class Main {
                             participants += ", " + scanner.nextLine();
                         }
 
-                        calendar.ajouterEvent("REUNION", titre2, utilisateur,
-                                LocalDateTime.of(annee2, moisRdv2, jourRdv2, heure2, minute2), duree2,
-                                lieu, participants, 0);
+                        List<String> partsList = java.util.Arrays.stream(participants.split(","))
+                                .map(String::trim).collect(java.util.stream.Collectors.toList());
+
+                        calendar.ajouter(new Reunion(titre, prop, dateDebut, duree, lieu, new Participants(partsList)));
 
                         System.out.println("Événement ajouté.");
                         break;
+                    }
 
                         case "4":
                         // Ajout simplifié d'un événement périodique
