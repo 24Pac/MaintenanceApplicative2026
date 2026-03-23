@@ -3,6 +3,7 @@ package mycalendar.cli;
 import mycalendar.domain.CalendarManager;
 import mycalendar.domain.Event;
 import mycalendar.domain.Evenement;
+import mycalendar.domain.RendezVousPersonnel;
 import mycalendar.domain.vo.PeriodeRecherche;
 import mycalendar.domain.vo.DateHeureDebut;
 
@@ -178,7 +179,8 @@ public class Main {
                     case "2":
                         // Ajout simplifié d'un RDV personnel
                         System.out.print("Titre de l'événement : ");
-                        String titre = scanner.nextLine();
+                        mycalendar.domain.vo.TitreEvenement titre = new mycalendar.domain.vo.TitreEvenement(scanner.nextLine());
+                        mycalendar.domain.vo.Proprietaire prop = new mycalendar.domain.vo.Proprietaire(utilisateur);
                         System.out.print("Année (AAAA) : ");
                         int annee = Integer.parseInt(scanner.nextLine());
                         System.out.print("Mois (1-12) : ");
@@ -189,12 +191,11 @@ public class Main {
                         int heure = Integer.parseInt(scanner.nextLine());
                         System.out.print("Minute début (0-59) : ");
                         int minute = Integer.parseInt(scanner.nextLine());
+                        mycalendar.domain.vo.DateHeureDebut debut = new mycalendar.domain.vo.DateHeureDebut(LocalDateTime.of(annee, moisRdv, jourRdv, heure, minute));
                         System.out.print("Durée (en minutes) : ");
-                        int duree = Integer.parseInt(scanner.nextLine());
+                        mycalendar.domain.vo.DureeEvenement duree = new mycalendar.domain.vo.DureeEvenement(Integer.parseInt(scanner.nextLine()));
 
-                        calendar.ajouterEvent("RDV_PERSONNEL", titre, utilisateur,
-                                LocalDateTime.of(annee, moisRdv, jourRdv, heure, minute), duree,
-                                "", "", 0);
+                        calendar.ajouter(new RendezVousPersonnel(titre, prop, debut, duree));
 
                         System.out.println("Événement ajouté.");
                         break;

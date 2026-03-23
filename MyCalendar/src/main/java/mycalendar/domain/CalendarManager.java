@@ -15,6 +15,11 @@ public class CalendarManager {
         this.nouveauxEvenements = new ArrayList<>();
     }
 
+    public void ajouter(Evenement e) {
+        nouveauxEvenements.add(e);
+        // On n'ajoute pas dans le vieux events car on est en train de le débrancher
+    }
+
     public void ajouterEvent(String type, String title, String proprietaire, LocalDateTime dateDebut, int dureeMinutes,
             String lieu, String participantsStr, int frequenceJours) {
         Event e = new Event(type, title, proprietaire, dateDebut, dureeMinutes, lieu, participantsStr, frequenceJours);
