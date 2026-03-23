@@ -2,6 +2,9 @@ package mycalendar.cli;
 
 import mycalendar.domain.CalendarManager;
 import mycalendar.domain.Event;
+import mycalendar.domain.Evenement;
+import mycalendar.domain.vo.PeriodeRecherche;
+import mycalendar.domain.vo.DateHeureDebut;
 
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
@@ -127,7 +130,10 @@ public class Main {
                                 LocalDateTime debutMois = LocalDateTime.of(anneeMois, mois, 1, 0, 0);
                                 LocalDateTime finMois = debutMois.plusMonths(1).minusSeconds(1);
 
-                                afficherListe(calendar.eventsDansPeriode(debutMois, finMois));
+                                afficherListe(calendar.evenementsDansPeriode(new PeriodeRecherche(
+                                        new DateHeureDebut(debutMois),
+                                        new DateHeureDebut(finMois)
+                                )));
                                 break;
 
                             case "3":
@@ -143,7 +149,10 @@ public class Main {
                                         .withHour(0).withMinute(0);
                                 LocalDateTime finSemaine = debutSemaine.plusDays(7).minusSeconds(1);
 
-                                afficherListe(calendar.eventsDansPeriode(debutSemaine, finSemaine));
+                                afficherListe(calendar.evenementsDansPeriode(new PeriodeRecherche(
+                                        new DateHeureDebut(debutSemaine),
+                                        new DateHeureDebut(finSemaine)
+                                )));
                                 break;
 
                             case "4":
@@ -157,7 +166,10 @@ public class Main {
                                 LocalDateTime debutJour = LocalDateTime.of(anneeJour, moisJour, jour, 0, 0);
                                 LocalDateTime finJour = debutJour.plusDays(1).minusSeconds(1);
 
-                                afficherListe(calendar.eventsDansPeriode(debutJour, finJour));
+                                afficherListe(calendar.evenementsDansPeriode(new PeriodeRecherche(
+                                        new DateHeureDebut(debutJour),
+                                        new DateHeureDebut(finJour)
+                                )));
                                 break;
                         }
                         break;
@@ -256,13 +268,13 @@ public class Main {
         }
     }
 
-    private static void afficherListe(List<Event> evenements) {
+    private static void afficherListe(List<Evenement> evenements) {
         if (evenements.isEmpty()) {
             System.out.println("Aucun événement trouvé pour cette période.");
         } else {
             System.out.println("Événements trouvés : ");
-            for (Event e : evenements) {
-                System.out.println("- " + e.description());
+            for (Evenement e : evenements) {
+                System.out.println("- [" + e.id().valeur().substring(0, 8) + "] " + e.description());
             }
         }
     }
