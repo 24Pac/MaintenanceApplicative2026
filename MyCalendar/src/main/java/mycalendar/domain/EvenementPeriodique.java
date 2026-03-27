@@ -1,7 +1,9 @@
 package mycalendar.domain;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import mycalendar.domain.vo.*;
 
+@JsonTypeName("periodique")
 public class EvenementPeriodique extends Evenement {
 
     private final FrequenceRecurrence frequence;

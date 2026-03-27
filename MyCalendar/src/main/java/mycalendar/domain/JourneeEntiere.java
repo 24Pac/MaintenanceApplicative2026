@@ -1,7 +1,9 @@
 package mycalendar.domain;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import mycalendar.domain.vo.*;
 
+@JsonTypeName("journee")
 public class JourneeEntiere extends Evenement {
 
     public JourneeEntiere(TitreEvenement titre, Proprietaire proprietaire, DateHeureDebut dateDebut) {

@@ -48,4 +48,20 @@ class CalendarManagerTest {
         manager.supprimerParId(rdv.id());
         assertEquals(0, manager.tous().size(), "L'événement doit être supprimé");
     }
+
+    @Test
+    void testAjouterRetourneConflits() {
+        DateHeureDebut debut1 = new DateHeureDebut(LocalDateTime.of(2023, 10, 20, 10, 0));
+        RendezVousPersonnel rdv1 = new RendezVousPersonnel(new TitreEvenement("RDV 1"), new Proprietaire("P1"), debut1, new DureeEvenement(60));
+        manager.ajouter(rdv1);
+
+        DateHeureDebut debut2 = new DateHeureDebut(LocalDateTime.of(2023, 10, 20, 10, 30));
+        RendezVousPersonnel rdv2 = new RendezVousPersonnel(new TitreEvenement("RDV 2"), new Proprietaire("P1"), debut2, new DureeEvenement(60));
+        
+        List<Conflit> conflits = manager.ajouter(rdv2);
+        
+        assertEquals(1, conflits.size(), "L'ajout doit détecter automatiquement le conflit");
+        assertTrue(conflits.get(0).implique(rdv1));
+        assertTrue(conflits.get(0).implique(rdv2));
+    }
 }

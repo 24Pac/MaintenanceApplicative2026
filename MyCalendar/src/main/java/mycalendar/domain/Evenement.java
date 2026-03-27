@@ -1,12 +1,33 @@
 package mycalendar.domain;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import mycalendar.domain.vo.*;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = RendezVousPersonnel.class, name = "rdv"),
+        @JsonSubTypes.Type(value = Reunion.class, name = "reunion"),
+        @JsonSubTypes.Type(value = EvenementPeriodique.class, name = "periodique"),
+        @JsonSubTypes.Type(value = JourneeEntiere.class, name = "journee")
+})
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public abstract class Evenement {
+    @JsonProperty("id")
     private final EventId id;
+    @JsonProperty("titre")
     private final TitreEvenement titre;
+    @JsonProperty("proprietaire")
     private final Proprietaire proprietaire;
+    @JsonProperty("dateDebut")
     private final DateHeureDebut dateDebut;
+    @JsonProperty("duree")
     private final DureeEvenement duree;
 
     protected Evenement(TitreEvenement titre, Proprietaire proprietaire, DateHeureDebut dateDebut, DureeEvenement duree) {
