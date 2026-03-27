@@ -192,7 +192,8 @@ public class Main {
                         System.out.print("Durée (en minutes) : ");
                         mycalendar.domain.vo.DureeEvenement duree = new mycalendar.domain.vo.DureeEvenement(Integer.parseInt(scanner.nextLine()));
 
-                        calendar.ajouter(new RendezVousPersonnel(titre, prop, debut, duree));
+                        List<Conflit> conflits = calendar.ajouter(new RendezVousPersonnel(titre, prop, debut, duree));
+                        afficherConflits(conflits);
 
                         System.out.println("Événement ajouté.");
                         break;
@@ -232,7 +233,8 @@ public class Main {
                         List<String> partsList = java.util.Arrays.stream(participants.split(","))
                                 .map(String::trim).collect(java.util.stream.Collectors.toList());
 
-                        calendar.ajouter(new Reunion(titre, prop, dateDebut, duree, lieu, new Participants(partsList)));
+                        List<Conflit> conflits = calendar.ajouter(new Reunion(titre, prop, dateDebut, duree, lieu, new Participants(partsList)));
+                        afficherConflits(conflits);
 
                         System.out.println("Événement ajouté.");
                         break;
@@ -261,7 +263,8 @@ public class Main {
                         System.out.print("Frequence (en jours) : ");
                         FrequenceRecurrence frequence = new FrequenceRecurrence(Integer.parseInt(scanner.nextLine()));
 
-                        calendar.ajouter(new EvenementPeriodique(titre, prop, dateDebut, duree, frequence));
+                        List<Conflit> conflits = calendar.ajouter(new EvenementPeriodique(titre, prop, dateDebut, duree, frequence));
+                        afficherConflits(conflits);
                         System.out.println("Événement ajouté.");
                         break;
                     }
@@ -278,7 +281,8 @@ public class Main {
                         int jourRdv = Integer.parseInt(scanner.nextLine());
                         DateHeureDebut dateDebut = new DateHeureDebut(LocalDateTime.of(annee, moisRdv, jourRdv, 0, 0));
 
-                        calendar.ajouter(new JourneeEntiere(titre, prop, dateDebut));
+                        List<Conflit> conflits = calendar.ajouter(new JourneeEntiere(titre, prop, dateDebut));
+                        afficherConflits(conflits);
                         System.out.println("Événement ajouté.");
                         break;
                     }
@@ -306,13 +310,22 @@ public class Main {
         }
     }
 
-    private static void afficherListe(List<Evenement> evenements) {
-        if (evenements.isEmpty()) {
+    private static void afficherListe(java.util.List<Evenement> events) {
+        if (events.isEmpty()) {
             System.out.println("Aucun événement trouvé pour cette période.");
         } else {
             System.out.println("Événements trouvés : ");
-            for (Evenement e : evenements) {
+            for (Evenement e : events) {
                 System.out.println("- [" + e.id().valeur().substring(0, 8) + "] " + e.description());
+            }
+        }
+    }
+
+    private static void afficherConflits(java.util.List<Conflit> conflits) {
+        if (!conflits.isEmpty()) {
+            System.out.println("⚠️ ATTENTION : " + conflits.size() + " CONFLIT(S) DÉTECTÉ(S) !");
+            for (Conflit c : conflits) {
+                System.out.println("  - Chevauchement avec : " + c.event1().description());
             }
         }
     }
