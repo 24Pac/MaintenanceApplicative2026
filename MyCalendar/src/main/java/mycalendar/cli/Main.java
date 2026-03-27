@@ -43,49 +43,39 @@ public class Main {
                 System.out.println("Choix : ");
 
                 switch (scanner.nextLine()) {
-                    case "1":
+                    case "1": {
                         System.out.print("Nom d'utilisateur: ");
-                        utilisateur = scanner.nextLine();
+                        String nom = scanner.nextLine();
+                        System.out.print("Mot de passe: ");
+                        String mdp = scanner.nextLine();
 
-                        if (utilisateur.equals("Roger")) {
-                            String motDePasse = scanner.nextLine();
-                            if (!motDePasse.equals("Chat")) {
-                                utilisateur = null;
-                            }
-                        } else {
-                            if (utilisateur.equals("Pierre")) {
-                                String motDePasse = scanner.nextLine();
-                                if (!motDePasse.equals("KiRouhl")) {
-                                    utilisateur = null;
-                                }
-                            } else {
-                                System.out.print("Mot de passe: ");
-                                String motDePasse = scanner.nextLine();
-
-                                for (int i = 0; i < nbUtilisateurs; i = i + 1) {
-                                    if (utilisateurs[i].equals(utilisateur) && motsDePasses[i].equals(motDePasse)) {
-                                        utilisateur = utilisateurs[i];
-                                    }
-                                }
+                        String trouvé = null;
+                        for (int i = 0; i < nbUtilisateurs; i = i + 1) {
+                            if (utilisateurs[i].equals(nom) && motsDePasses[i].equals(mdp)) {
+                                trouvé = utilisateurs[i];
                             }
                         }
+                        utilisateur = trouvé;
                         break;
+                    }
 
-                    case "2":
+                    case "2": {
                         System.out.print("Nom d'utilisateur: ");
-                        utilisateur = scanner.nextLine();
+                        String nouveauNom = scanner.nextLine();
                         System.out.print("Mot de passe: ");
-                        String motDePasse = scanner.nextLine();
+                        String nouveauMdp = scanner.nextLine();
                         System.out.print("Répéter mot de passe: ");
-                        if (scanner.nextLine().equals(motDePasse)) {
-                            utilisateurs[nbUtilisateurs] = utilisateur;
-                            motsDePasses[nbUtilisateurs] = motDePasse;
+                        if (scanner.nextLine().equals(nouveauMdp)) {
+                            utilisateurs[nbUtilisateurs] = nouveauNom;
+                            motsDePasses[nbUtilisateurs] = nouveauMdp;
                             nbUtilisateurs = nbUtilisateurs + 1;
+                            utilisateur = nouveauNom;
                         } else {
                             System.out.println("Les mots de passes ne correspondent pas...");
                             utilisateur = null;
                         }
                         break;
+                    }
                 }
             }
 
@@ -96,7 +86,7 @@ public class Main {
                 System.out.println("2 - Ajouter un rendez-vous perso");
                 System.out.println("3 - Ajouter une réunion");
                 System.out.println("4 - Ajouter un évènement périodique");
-                System.out.println("5 - Ajouter une journée entière (Nouveau !)");
+                System.out.println("5 - Ajouter une journée entière");
                 System.out.println("6 - Détecter les conflits");
                 System.out.println("7 - Supprimer un événement (par ID)");
                 System.out.println("8 - Se déconnecter");
