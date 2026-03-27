@@ -2,6 +2,7 @@ package mycalendar.cli;
 
 import mycalendar.domain.*;
 import mycalendar.domain.vo.*;
+import mycalendar.domain.PersistenceService;
 
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
@@ -10,8 +11,14 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
+    private static final PersistenceService persistence = new PersistenceService("calendar.json");
     public static void main(String[] args) {
-        CalendarManager calendar = new CalendarManager();
+        CalendarManager manager = new CalendarManager();
+        try {
+            persistence.load().forEach(manager::ajouter);
+        } catch (Exception e) {
+            System.out.println("Erreur chargement calendrier: " + e.getMessage());
+        }
         Scanner scanner = new Scanner(System.in);
         String utilisateur = null;
         boolean continuer = true;
@@ -108,7 +115,7 @@ public class Main {
 
                         switch (choix) {
                             case "1":
-                                afficherListe(calendar.tous());
+                                afficherListe(manager.tous());
                                 break;
 
                             case "2":
@@ -120,7 +127,7 @@ public class Main {
                                 LocalDateTime debutMois = LocalDateTime.of(anneeMois, mois, 1, 0, 0);
                                 LocalDateTime finMois = debutMois.plusMonths(1).minusSeconds(1);
 
-                                afficherListe(calendar.evenementsDansPeriode(new PeriodeRecherche(
+                                afficherListe(manager.evenementsDansPeriode(new PeriodeRecherche(
                                         new DateHeureDebut(debutMois),
                                         new DateHeureDebut(finMois)
                                 )));
@@ -139,7 +146,7 @@ public class Main {
                                         .withHour(0).withMinute(0);
                                 LocalDateTime finSemaine = debutSemaine.plusDays(7).minusSeconds(1);
 
-                                afficherListe(calendar.evenementsDansPeriode(new PeriodeRecherche(
+                                afficherListe(manager.evenementsDansPeriode(new PeriodeRecherche(
                                         new DateHeureDebut(debutSemaine),
                                         new DateHeureDebut(finSemaine)
                                 )));
@@ -156,7 +163,7 @@ public class Main {
                                 LocalDateTime debutJour = LocalDateTime.of(anneeJour, moisJour, jour, 0, 0);
                                 LocalDateTime finJour = debutJour.plusDays(1).minusSeconds(1);
 
-                                afficherListe(calendar.evenementsDansPeriode(new PeriodeRecherche(
+                                afficherListe(manager.evenementsDansPeriode(new PeriodeRecherche(
                                         new DateHeureDebut(debutJour),
                                         new DateHeureDebut(finJour)
                                 )));
@@ -183,8 +190,9 @@ public class Main {
                         System.out.print("Durée (en minutes) : ");
                         mycalendar.domain.vo.DureeEvenement duree = new mycalendar.domain.vo.DureeEvenement(Integer.parseInt(scanner.nextLine()));
 
-                        List<Conflit> conflits = calendar.ajouter(new RendezVousPersonnel(titre, prop, debut, duree));
+                        List<Conflit> conflits = manager.ajouter(new RendezVousPersonnel(titre, prop, debut, duree));
                         afficherConflits(conflits);
+                        sauvegarder(manager);
 
                         System.out.println("Événement ajouté.");
                         break;
@@ -224,8 +232,9 @@ public class Main {
                         List<String> partsList = java.util.Arrays.stream(participants.split(","))
                                 .map(String::trim).collect(java.util.stream.Collectors.toList());
 
-                        List<Conflit> conflits = calendar.ajouter(new Reunion(titre, prop, dateDebut, duree, lieu, new Participants(partsList)));
+                        List<Conflit> conflits = manager.ajouter(new Reunion(titre, prop, dateDebut, duree, lieu, new Participants(partsList)));
                         afficherConflits(conflits);
+                        sauvegarder(manager);
 
                         System.out.println("Événement ajouté.");
                         break;
@@ -254,8 +263,9 @@ public class Main {
                         System.out.print("Frequence (en jours) : ");
                         FrequenceRecurrence frequence = new FrequenceRecurrence(Integer.parseInt(scanner.nextLine()));
 
-                        List<Conflit> conflits = calendar.ajouter(new EvenementPeriodique(titre, prop, dateDebut, duree, frequence));
+                        List<Conflit> conflits = manager.ajouter(new EvenementPeriodique(titre, prop, dateDebut, duree, frequence));
                         afficherConflits(conflits);
+                        sauvegarder(manager);
                         System.out.println("Événement ajouté.");
                         break;
                     }
@@ -272,8 +282,9 @@ public class Main {
                         int jourRdv = Integer.parseInt(scanner.nextLine());
                         DateHeureDebut dateDebut = new DateHeureDebut(LocalDateTime.of(annee, moisRdv, jourRdv, 0, 0));
 
-                        List<Conflit> conflits = calendar.ajouter(new JourneeEntiere(titre, prop, dateDebut));
+                        List<Conflit> conflits = manager.ajouter(new JourneeEntiere(titre, prop, dateDebut));
                         afficherConflits(conflits);
+                        sauvegarder(manager);
                         System.out.println("Événement ajouté.");
                         break;
                     }
@@ -282,7 +293,8 @@ public class Main {
                         System.out.println("\n=== Suppression d'un événement ===");
                         System.out.print("Entrez l'ID complet de l'événement à supprimer : ");
                         String idStr = scanner.nextLine();
-                        calendar.supprimerParId(mycalendar.domain.vo.EventId.fromString(idStr));
+                        manager.supprimerParId(mycalendar.domain.vo.EventId.fromString(idStr));
+                        sauvegarder(manager);
                         System.out.println("Demande de suppression traitée.");
                         break;
                     }
@@ -309,6 +321,14 @@ public class Main {
             for (Evenement e : events) {
                 System.out.println("- [" + e.id().valeur().substring(0, 8) + "] " + e.description());
             }
+        }
+    }
+
+    private static void sauvegarder(CalendarManager manager) {
+        try {
+            persistence.save(manager.tous()); // Changed to manager.tous() to save all events
+        } catch (Exception e) {
+            System.out.println("Erreur sauvegarde: " + e.getMessage());
         }
     }
 
