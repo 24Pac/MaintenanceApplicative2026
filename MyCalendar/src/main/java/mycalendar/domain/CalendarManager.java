@@ -13,8 +13,14 @@ public class CalendarManager {
         this.nouveauxEvenements = new ArrayList<>();
     }
 
-    public void ajouter(Evenement e) {
+    public List<mycalendar.domain.vo.Conflit> ajouter(Evenement e) {
+        List<mycalendar.domain.vo.Conflit> conflits = nouveauxEvenements.stream()
+                .filter(existant -> existant.chevauche(e))
+                .map(existant -> new mycalendar.domain.vo.Conflit(existant, e))
+                .collect(java.util.stream.Collectors.toList());
+        
         nouveauxEvenements.add(e);
+        return conflits;
     }
 
     public List<Evenement> evenementsDansPeriode(PeriodeRecherche periode) {
@@ -24,17 +30,12 @@ public class CalendarManager {
     }
 
     public List<mycalendar.domain.vo.Conflit> detecterConflits() {
-        List<mycalendar.domain.vo.Conflit> conflits = new java.util.ArrayList<>();
-        for (int i = 0; i < nouveauxEvenements.size(); i++) {
-            Evenement e1 = nouveauxEvenements.get(i);
-            for (int j = i + 1; j < nouveauxEvenements.size(); j++) {
-                Evenement e2 = nouveauxEvenements.get(j);
-                if (e1.chevauche(e2)) {
-                    conflits.add(new mycalendar.domain.vo.Conflit(e1, e2));
-                }
-            }
-        }
-        return conflits;
+        return nouveauxEvenements.stream()
+                .flatMap(e1 -> nouveauxEvenements.stream()
+                        .filter(e2 -> nouveauxEvenements.indexOf(e1) < nouveauxEvenements.indexOf(e2))
+                        .filter(e1::chevauche)
+                        .map(e2 -> new mycalendar.domain.vo.Conflit(e1, e2)))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     public void supprimerParId(mycalendar.domain.vo.EventId id) {
